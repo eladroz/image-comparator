@@ -29,7 +29,10 @@ function App() {
     window.history.replaceState({}, '', url);
   };
   
-  const [inputUrl, setInputUrl] = useState("");
+  const [inputUrl, setInputUrl] = useState(() => {
+    // If there's a URL parameter, set it as the input value
+    return getUrlParameter() || "";
+  });
   const [currentImageUrl, setCurrentImageUrl] = useState(() => {
     // Check for URL parameter first
     const urlParam = getUrlParameter();
@@ -43,9 +46,12 @@ function App() {
   const [quality, setQuality] = useState(80);
   const [useAVIF, setUseAVIF] = useState(false);
 
-  // Update URL parameter when currentImageUrl changes
+  // Update URL parameter when currentImageUrl changes, but only if it's not a random image
   useEffect(() => {
-    updateUrlParameter(currentImageUrl);
+    // Only set URL parameter if the current image is not one of the random images
+    if (!randomImageUrls.includes(currentImageUrl)) {
+      updateUrlParameter(currentImageUrl);
+    }
   }, [currentImageUrl]);
 
   const handleLoadImage = () => {
@@ -85,7 +91,7 @@ function App() {
       <div className="container mx-auto space-y-8">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body gap-3">
-            <h2 className="card-title">Image size: original vs. Netlify Image CDN</h2>
+            <h2 className="card-title">Original image (Left) vs. Netlify Image CDN (Right)</h2>
             <div className="flex gap-2">
               <input
                 type="url"
@@ -103,9 +109,10 @@ function App() {
                 Load
               </button>
             </div>
-            <p className="text-sm text-gray-600">
+            {/*
+            <p className="text-xs text-gray-600">
               Current image: <span className="font-mono text-xs">{currentImageUrl}</span>
-            </p>            
+            </p>*/}        
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Quality: {quality}</span>
@@ -119,7 +126,8 @@ function App() {
                 className="range range-primary" 
               />
             </div>
-
+            <p>Note: this page if for image size & quality comparison, but not for latency - due to how it proxies images</p>
+            {/*
             <div className="form-control">
               <label className="label cursor-pointer justify-start">
                 <input 
@@ -130,7 +138,7 @@ function App() {
                 />
                 <span className="label-text">Use AVIF format</span>
               </label>
-            </div>
+            </div>*/}
           </div>
         </div>
 
