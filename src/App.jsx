@@ -80,6 +80,7 @@ function App() {
     if (useAVIF) {
       params.push('fm=avif');
     } else if (isDev) {
+      // Currently, in local dev there is no automatic content type negotiation
       params.push('fm=webp');
     }
     
